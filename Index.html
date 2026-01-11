@@ -1,0 +1,222 @@
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<title> Attendance</title>  <style>  
+body{  
+  font-family:Poppins,Arial;  
+  background:#fff7f0;  
+  padding:20px;  
+}  
+  
+.main-title{  
+  text-align:center;  
+  font-size:36px;  
+  font-weight:800;  
+  color:#ff7a00;  
+  margin-bottom:20px;  
+  letter-spacing:1px;  
+  text-shadow:0 4px 10px rgba(255,122,0,.4);  
+}  
+.main-title span{color:#222}  
+  
+.card{  
+  background:linear-gradient(135deg,#ff7a00,#ff9f43);  
+  color:white;  
+  padding:20px;  
+  border-radius:20px;  
+  text-align:center;  
+  box-shadow:0 10px 25px rgba(0,0,0,.2);  
+  animation:float 3s ease-in-out infinite;  
+}  
+@keyframes float{  
+  0%{transform:translateY(0)}  
+  50%{transform:translateY(-8px)}  
+  100%{transform:translateY(0)}  
+}  
+  
+.circle{  
+  width:120px;height:120px;border-radius:50%;  
+  background:white;  
+  color:#28a745;  
+  display:flex;align-items:center;justify-content:center;  
+  font-size:30px;font-weight:bold;  
+  margin:15px auto;  
+  box-shadow:0 0 20px rgba(40,167,69,.7);  
+}  
+  
+.calendar{  
+  display:grid;  
+  grid-template-columns:repeat(7,1fr);  
+  gap:10px;  
+  margin-top:20px;  
+}  
+  
+.day{  
+  background:white;  
+  padding:12px;  
+  border-radius:12px;  
+  text-align:center;  
+  font-weight:bold;  
+  cursor:pointer;  
+  box-shadow:0 6px 15px rgba(0,0,0,.1);  
+  transition:.2s;  
+}  
+.day:hover{transform:scale(1.05);background:#fff1e0}  
+  
+.header-day{  
+  background:#ffecd6;  
+  color:#ff7a00;  
+  cursor:default;  
+}  
+  
+.present{background:linear-gradient(135deg,#00c853,#b2ff59)}  
+.absent{background:linear-gradient(135deg,#ff1744,#ff5252);color:white}  
+  
+.box{  
+  background:white;  
+  padding:20px;  
+  border-radius:15px;  
+  margin-top:20px;  
+  box-shadow:0 10px 25px rgba(0,0,0,.15);  
+}  
+  
+select,input{  
+  padding:10px;  
+  border-radius:12px;  
+  border:none;  
+  margin:5px;  
+  box-shadow:0 5px 12px rgba(0,0,0,.15);  
+}  
+input[type=range]{accent-color:#ff7a00}  
+  
+/* 🔥 ONLY CHANGE – slider ko lamba kiya */  
+#slider{  
+  width:100%;  
+}  
+  
+.footer{  
+  text-align:center;  
+  margin-top:30px;  
+  color:#888;  
+  font-weight:bold;  
+}  
+</style>  </head>  <body>  <h2 class="main-title">College – <span> Attendance Prediction</span></h2>  Month:
+<select id="month" onchange="draw()">
+
+<option value="0">January</option>  
+<option value="1">February</option>  
+<option value="2">March</option>  
+<option value="3">April</option>  
+<option value="4">May</option>  
+<option value="5">June</option>  
+<option value="6">July</option>  
+</select>  Subject:
+<select id="sub" onchange="draw()">
+
+<option value="DSC">Data Structure using C</option>  
+<option value="OS">Operating System</option>  
+<option value="DBMS">Database Management System</option>  
+<option value="ADS">Analysis & Design</option>  
+<option value="UH">Understanding Harmony</option>  
+<option value="ES">Environmental Sustainability</option>  
+<option value="DSCL">DSC Lab</option>  
+<option value="DBMSL">DBMS Lab</option>  
+<option value="ADL">Animation & Design Lab</option>  
+<option value="EG">E-Governance</option>  
+</select>  <div class="card">  
+  <h3 id="sname">DSC</h3>  
+  <div class="circle" id="avg">0%</div>  
+  <p>Total: <b id="t">0</b> |  
+     Present: <b id="p">0</b> |  
+     Absent: <b id="a">0</b></p>  
+</div>  <div class="calendar">  
+  <div class="day header-day">Sun</div>  
+  <div class="day header-day">Mon</div>  
+  <div class="day header-day">Tue</div>  
+  <div class="day header-day">Wed</div>  
+  <div class="day header-day">Thu</div>  
+  <div class="day header-day">Fri</div>  
+  <div class="day header-day">Sat</div>  
+</div>  <div class="calendar" id="cal"></div>  <div class="box">  
+<h4>Attendance Prediction</h4>  
+<input type="range" min="0" max="30" value="0" id="slider" oninput="predict()">  <p>Bunk Next <b id="bunk">0</b> Classes</p>  
+<p>Predicted %: <b id="pred">0%</b></p>  
+<p id="status"></p>  
+</div>  <div class="footer">Created by Pankaj Yadav</div>  <script>  
+let data={};  
+let year=2026;  
+  
+function daysInMonth(m){  
+  return new Date(year,m+1,0).getDate();  
+}  
+  
+function draw(){  
+  let m=document.getElementById("month").value;  
+  let cal=document.getElementById("cal");  
+  cal.innerHTML="";  
+  let days=daysInMonth(m);  
+  let firstDay=new Date(year,m,1).getDay();  
+  
+  for(let i=0;i<firstDay;i++){  
+    let empty=document.createElement("div");  
+    empty.className="day";  
+    empty.style.visibility="hidden";  
+    cal.appendChild(empty);  
+  }  
+  
+  for(let i=1;i<=days;i++){  
+    let d=document.createElement("div");  
+    d.className="day";  
+    d.innerText=i;  
+    let key=document.getElementById("sub").value+"_"+m+"_"+i;  
+  
+    if(data[key]=="present") d.classList.add("present");  
+    if(data[key]=="absent") d.classList.add("absent");  
+  
+    d.onclick=function(){  
+      data[key]= data[key]=="present" ? "absent" : "present";  
+      draw(); calc();  
+    }  
+    cal.appendChild(d);  
+  }  
+  calc();  
+}  
+  
+function calc(){  
+  let s=document.getElementById("sub").value;  
+  let m=document.getElementById("month").value;  
+  document.getElementById("sname").innerText=s;  
+  
+  let total=0,present=0,absent=0;  
+  for(let k in data){  
+    if(k.startsWith(s+"_"+m)){  
+      total++;  
+      if(data[k]=="present") present++; else absent++;  
+    }  
+  }  
+  
+  let per= total==0?0:(present/total)*100;  
+  document.getElementById("t").innerText=total;  
+  document.getElementById("p").innerText=present;  
+  document.getElementById("a").innerText=absent;  
+  document.getElementById("avg").innerText=per.toFixed(0)+"%";  
+  document.getElementById("status").innerText= per>=75?"Eligible":"Not Eligible";  
+  predict();  
+}  
+  
+function predict(){  
+  let total=parseInt(document.getElementById("t").innerText);  
+  let present=parseInt(document.getElementById("p").innerText);  
+  let bunk=document.getElementById("slider").value;  
+  
+  let futureTotal=total+30;  
+  let futurePresent=present+(30-bunk);  
+  let per=(futurePresent/futureTotal)*100;  
+  
+  document.getElementById("bunk").innerText=bunk;  
+  document.getElementById("pred").innerText=per.toFixed(2)+"%";  
+}  
+  
+draw();  
+</script>  </body>  
+</html>
