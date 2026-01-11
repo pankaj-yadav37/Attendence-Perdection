@@ -89,7 +89,7 @@ select,input{
 }  
 input[type=range]{accent-color:#ff7a00}  
   
-/* 🔥 ONLY CHANGE – slider ko lamba kiya */  
+
 #slider{  
   width:100%;  
 }  
@@ -200,7 +200,7 @@ function calc(){
   document.getElementById("p").innerText=present;  
   document.getElementById("a").innerText=absent;  
   document.getElementById("avg").innerText=per.toFixed(0)+"%";  
-  document.getElementById("status").innerText= per>=75?"Eligible":"Not Eligible";  
+  document.getElementById("status").innerText= per>=75?"Eligible For Exam":"Not Eligible For Exam";  
   predict();  
 }  
   
@@ -219,4 +219,5 @@ function predict(){
   
 draw();  
 </script>  </body>  
+
 </html>
